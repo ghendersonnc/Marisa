@@ -1,3 +1,3 @@
-from marisa.commands import Gelbooru
-from marisa.commands import Random
-from marisa.commands import General
+from marisa.extensions import Gelbooru
+from marisa.extensions import Random
+from marisa.extensions import General

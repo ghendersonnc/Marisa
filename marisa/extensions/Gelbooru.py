@@ -9,6 +9,10 @@ load_dotenv('../')
 gb = GB(os.getenv('GELBOORU_API_KEY'), os.getenv('GELBOORU_USER_ID'))
 
 
+plugin = lightbulb.Plugin('Gelbooru')
+
+
+@plugin.command
 @lightbulb.option(name='tags', description='Tags should be formated as such: tag_one tag_two', required=False)
 @lightbulb.add_cooldown(15.0, 1, lightbulb.UserBucket)
 @lightbulb.command(name='gelbooru', description='Random image from gelbooru', auto_defer=True)
@@ -29,9 +33,9 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
     await ctx.respond(embed=embed)
 
 
-def setup(bot: lightbulb.BotApp) -> None:
-    """
-    Registers commands
-    :param bot: bot to register command to. Should be lightbulb.BotApp
-    """
-    bot.command(gelbooru)
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(plugin)
+
+
+def unload(bot: lightbulb.BotApp):
+    bot.remove_plugin(plugin)

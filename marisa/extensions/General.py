@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 
 load_dotenv('../')
 
+plugin = lightbulb.Plugin('General')
 
+
+@plugin.command
 @lightbulb.option(name='user', description='User', required=False)
 @lightbulb.add_cooldown(15.0, 1, lightbulb.UserBucket)
-@lightbulb.command(name='info', description='info on user', auto_defer=True)
+@lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234', auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def info(ctx: lightbulb.Context) -> None:
     try:
@@ -23,9 +26,9 @@ async def info(ctx: lightbulb.Context) -> None:
         await ctx.respond(f"That didn't work :(")
 
 
-def setup(bot: lightbulb.BotApp) -> None:
-    """
-    Registers commands
-    :param bot: bot to register command to. Should be lightbulb.BotApp
-    """
-    bot.command(info)
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(plugin)
+
+
+def unload(bot: lightbulb.BotApp):
+    bot.remove_plugin(plugin)

@@ -2,7 +2,6 @@ import hikari
 import lightbulb
 import os
 from dotenv import load_dotenv
-import marisa
 
 load_dotenv()
 
@@ -12,9 +11,11 @@ bot = lightbulb.BotApp(
     default_enabled_guilds=int(os.getenv('DEFAULT_GUILD_ID'))
 )
 
-marisa.commands.Gelbooru.setup(bot)
-marisa.commands.Random.setup(bot)
-marisa.commands.General.setup(bot)
+bot.load_extensions(
+    'marisa.extensions.General',
+    'marisa.extensions.Gelbooru',
+    'marisa.extensions.Random'
+)
 
 
 @bot.listen(hikari.GuildMessageCreateEvent)
