@@ -3,8 +3,9 @@ import lightbulb
 from dotenv import load_dotenv
 from pygelbooru import Gelbooru as GB
 import os
+import requests
 
-load_dotenv('../')
+load_dotenv('../../.env')
 
 gb = GB(os.getenv('GELBOORU_API_KEY'), os.getenv('GELBOORU_USER_ID'))
 
@@ -39,3 +40,7 @@ def load(bot: lightbulb.BotApp):
 
 def unload(bot: lightbulb.BotApp):
     bot.remove_plugin(plugin)
+
+def check_for_marisa():
+    res = requests.get(url='https://gelbooru.com/index.php?page=dapi&q=index&limit=1&s=post&json=1&tags=kirisame_marisa')
+    return res.json()['@attributes']['count']
