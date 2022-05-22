@@ -55,10 +55,16 @@ async def on_error(event: lightbulb.CommandErrorEvent):
 
     exception = event.exception.__cause__ or event.exception
 
+    if isinstance(exception, hikari.NotFoundError):
+        if event.context.command.name == 'info':
+            await event.context.respond('User is not found')
+        return
+
     if isinstance(exception, lightbulb.CommandIsOnCooldown):
         await event.context.respond(f"You are on cooldown for this command. Please retry in {int(exception.retry_after)} seconds")
-    else:
-        raise exception
+        return
+
+    raise exception
 
 previous_marisa_count = 0
 

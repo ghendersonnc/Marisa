@@ -1,6 +1,7 @@
 import hikari
 import lightbulb
 from dotenv import load_dotenv
+import re
 
 load_dotenv('../')
 
@@ -20,21 +21,22 @@ def generate_response(user: hikari.User) -> str:
 @plugin.command
 @lightbulb.option(name='user', description='User', required=False)
 @lightbulb.add_cooldown(15.0, 1, lightbulb.UserBucket)
-@lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234', auto_defer=True)
+@lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234 OR their ID', auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def info(ctx: lightbulb.Context) -> None:
-    try:
-        if not ctx.options.user:
-            user: hikari.User = ctx.author
-            await ctx.respond(generate_response(user))
-            return
-
-        converter = lightbulb.UserConverter(ctx.author)
-        user = await converter.convert(ctx.options.user[3:-1])
+    if not ctx.options.user:
+        user: hikari.User = ctx.author
         await ctx.respond(generate_response(user))
+        return
 
-    except TypeError:
-        await ctx.respond(f"That didn't work :(")
+    given_id = re.findall('[0-9]+', ctx.options.user)
+
+    if not given_id:
+        await ctx.respond("Option must be given using the user's ID (Right click their name then click 'Copy ID' at the bottom of the list) or @user#1234")
+        return
+
+    user = await ctx.command.app.rest.fetch_user(given_id[0])
+    await ctx.respond(generate_response(user))
 
 
 def load(bot: lightbulb.BotApp):
