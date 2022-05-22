@@ -29,7 +29,13 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
         post = await gb.random_post(exclude_tags=['loli', 'shota'])
 
     gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
-    embed = hikari.Embed(title='GELBOORU IMAGE', url=f"{gb_url}{int(post)}")
+    embed = hikari.Embed(
+        title='Gelbooru Image',
+        url=f"{gb_url}{int(post)}",
+        color=hikari.Color(0x0773FB),
+        description=f"{ctx.options.tags if ctx.options.tags else ''}"
+    )
+    embed.set_footer(f"Plain URL to post: {gb_url}{int(post)}")
     embed.set_image(str(post))
     await ctx.respond(embed=embed)
 
