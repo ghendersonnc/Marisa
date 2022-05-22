@@ -9,17 +9,14 @@ load_dotenv()
 bot = lightbulb.BotApp(
     token=os.getenv('BOT_TOKEN'),
     prefix='$',
-    default_enabled_guilds=int(os.getenv('DEFAULT_GUILD_ID'))
+    default_enabled_guilds=int(os.getenv('DEFAULT_GUILD_ID')),
+    banner='marisa',
+    allow_color=False,
 )
 
 tasks.load(bot)
 
-bot.load_extensions(
-    'marisa.extensions.General',
-    'marisa.extensions.Gelbooru',
-    'marisa.extensions.Random'
-)
-
+bot.load_extensions_from('./marisa/extensions')
 
 @lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.command('reload', 'reload commands')
@@ -88,4 +85,9 @@ if __name__ == '__main__':
         import uvloop
         uvloop.install()
 
-    bot.run()
+    bot.run(
+        activity=hikari.Activity(
+            name="Reimu clean the shrine",
+            type=hikari.ActivityType.WATCHING
+        )
+    )
