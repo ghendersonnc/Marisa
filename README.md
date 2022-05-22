@@ -1,4 +1,4 @@
 # Marisa
-###Cool fumo bot
+### Cool fumo bot
 
-I am porting my DiscordJS bot to hikari and lightbulb and renaming it to Marisa, the Touhou character
+Rewriting my old bot from scratch using hikari.
