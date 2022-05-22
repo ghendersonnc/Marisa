@@ -21,6 +21,21 @@ bot.load_extensions(
 )
 
 
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.command('reload', 'reload commands')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def reload(ctx: lightbulb.Context):
+    bot.reload_extensions(
+        'marisa.extensions.General',
+        'marisa.extensions.Gelbooru',
+        'marisa.extensions.Random'
+    )
+
+    await ctx.respond("Extensions reloaded?")
+
+
+bot.command(reload)
+
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def on_guild_message(event: hikari.GuildMessageCreateEvent):
     if event.author.is_bot:
@@ -47,7 +62,7 @@ async def on_error(event: lightbulb.CommandErrorEvent):
 
 previous_marisa_count = 0
 
-@tasks.task(h=1, auto_start=True)
+@tasks.task(h=1, auto_start=False)
 async def check_marisa():
     global previous_marisa_count
     marisa_count = marisa.extensions.Gelbooru.check_for_marisa()
