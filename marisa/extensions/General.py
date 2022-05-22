@@ -21,7 +21,7 @@ def generate_response(user: hikari.User) -> str:
 @plugin.command
 @lightbulb.option(name='user', description='User', required=False)
 @lightbulb.add_cooldown(15.0, 1, lightbulb.UserBucket)
-@lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234 OR their ID', auto_defer=True)
+@lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234 OR their ID')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def info(ctx: lightbulb.Context) -> None:
     if not ctx.options.user:

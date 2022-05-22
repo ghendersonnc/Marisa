@@ -16,7 +16,7 @@ plugin = lightbulb.Plugin('Gelbooru')
 @plugin.command
 @lightbulb.option(name='tags', description='Tags should be formated as such: tag_one tag_two', required=False)
 @lightbulb.add_cooldown(600.0, 1, lightbulb.UserBucket)
-@lightbulb.command(name='gelbooru', description='Random image from gelbooru', auto_defer=True)
+@lightbulb.command(name='gelbooru', description='Random image from gelbooru')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gelbooru(ctx: lightbulb.Context) -> None:
     if ctx.options.tags:
