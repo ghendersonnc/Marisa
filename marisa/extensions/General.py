@@ -12,7 +12,7 @@ def generate_response(user: hikari.User) -> str:
     res += f"Join date: {user.created_at.strftime('%m/%d/%Y')}\n"
     res += f"id: {user.id}\n"
     res += f"Bot Status: {'Is a bot' if user.is_bot else 'Not a bot'}\n"
-    res += f"Avatar URL: {user.avatar_url}\n"
+    res += f"Avatar URL: {user.avatar_url if user.avatar_url else user.default_avatar_url}\n"
 
     return res
 
@@ -24,15 +24,15 @@ def generate_response(user: hikari.User) -> str:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def info(ctx: lightbulb.Context) -> None:
     try:
-        if ctx.options.user:
-            converter = lightbulb.UserConverter(ctx.author)
-            user = await converter.convert(ctx.options.user[3:-1])
-
+        if not ctx.options.user:
+            user: hikari.User = ctx.author
             await ctx.respond(generate_response(user))
             return
 
-        user: hikari.User = ctx.author
+        converter = lightbulb.UserConverter(ctx.author)
+        user = await converter.convert(ctx.options.user[3:-1])
         await ctx.respond(generate_response(user))
+
     except TypeError:
         await ctx.respond(f"That didn't work :(")
 
