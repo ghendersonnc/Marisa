@@ -1,3 +1,6 @@
+import datetime
+import logging
+
 import hikari
 import lightbulb
 from lightbulb.ext import tasks
@@ -5,6 +8,8 @@ import os
 from dotenv import load_dotenv
 import marisa
 load_dotenv()
+
+log = logging.getLogger('MARISA')
 
 bot = lightbulb.BotApp(
     token=os.getenv('BOT_TOKEN'),
@@ -33,6 +38,19 @@ async def reload(ctx: lightbulb.Context):
 
 bot.command(reload)
 
+@bot.listen(hikari.StartingEvent)
+async def on_startup(_: hikari.StartingEvent):
+    # TODO: sqlite database
+    log.info('...STARTING UP...')
+
+@bot.listen(hikari.StartedEvent)
+async def on_started(_: hikari.StartedEvent):
+    log.info('MARISA IS ALIVE')
+
+@bot.listen(lightbulb.LightbulbStartedEvent)
+async def on_lightbulb_started(_: lightbulb.LightbulbStartedEvent):
+    log.info("MARISA'S COMMANDS ARE ALIVE")
+
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def on_guild_message(event: hikari.GuildMessageCreateEvent):
     if event.author.is_bot:
@@ -45,6 +63,11 @@ async def on_dm_message(event: hikari.DMMessageCreateEvent):
         return
 
     await event.author.send('fbfbfb')
+
+
+@bot.listen(lightbulb.SlashCommandInvocationEvent)
+async def on_command_use(event: lightbulb.SlashCommandInvocationEvent):
+    await bot.rest.trigger_typing(channel=event.context.channel_id)
 
 
 @bot.listen(lightbulb.CommandErrorEvent)
