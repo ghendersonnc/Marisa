@@ -1,16 +1,29 @@
 import hikari
 import lightbulb
 from dotenv import load_dotenv
-from pygelbooru import Gelbooru as GB
 import os
-import requests
+import aiohttp
+import asyncio
 
 load_dotenv('../../.env')
 
-gb = GB(os.getenv('GELBOORU_API_KEY'), os.getenv('GELBOORU_USER_ID'))
-
 
 plugin = lightbulb.Plugin('Gelbooru')
+
+
+async def random_post(tags: list = None, exclude_tags: list = None):
+    booru_tags = [tag.strip().lower().replace(' ', '_') for tag in tags] if tags else []
+    booru_tags += ['-' + tag.strip().lstrip('-').lower().replace(' ', '_') for tag in exclude_tags] if exclude_tags else []
+
+    booru_tags.append('sort:random')
+    booru_tags = ' '.join(booru_tags)
+    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&limit=1&tags={booru_tags}&api_key={os.getenv('GELBOORU_API_KEY')}&user_id={os.getenv('GELBOORU_USER_ID')}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            result = await response.json()
+            result = result['post'][0] if result else None
+    return result
 
 
 @plugin.command
@@ -24,19 +37,23 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
             await ctx.respond('Nice try.')
             return
         tags = ctx.options.tags.split(' ')
-        post = await gb.random_post(tags=tags, exclude_tags=['loli', 'shota'])
+        post = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
     else:
-        post = await gb.random_post(exclude_tags=['loli', 'shota'])
+        post = await random_post(exclude_tags=['loli', 'shota'])
+
+    if not post:
+        await ctx.respond('No post :(')
+        return
 
     gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
     embed = hikari.Embed(
         title='Gelbooru Image',
-        url=f"{gb_url}{int(post)}",
+        url=f"{gb_url}{post['id']}",
         color=hikari.Color(0x0773FB),
         description=f"{ctx.options.tags if ctx.options.tags else ''}"
     )
-    embed.set_footer(f"Plain URL to post: {gb_url}{int(post)}")
-    embed.set_image(str(post))
+    embed.set_footer(f"Plain URL to post: {gb_url}{post['id']}")
+    embed.set_image(post['file_url'])
     await ctx.respond(embed=embed)
 
 
@@ -47,6 +64,6 @@ def load(bot: lightbulb.BotApp):
 def unload(bot: lightbulb.BotApp):
     bot.remove_plugin(plugin)
 
+
 def check_for_marisa():
-    res = requests.get(url='https://gelbooru.com/index.php?page=dapi&q=index&limit=1&s=post&json=1&tags=kirisame_marisa')
-    return res.json()['@attributes']['count']
+    ...
