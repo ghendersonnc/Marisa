@@ -7,6 +7,7 @@ from lightbulb.ext import tasks
 import os
 from dotenv import load_dotenv
 import marisa
+
 load_dotenv()
 
 log = logging.getLogger('MARISA')
@@ -23,6 +24,7 @@ tasks.load(bot)
 
 bot.load_extensions_from('./marisa/extensions')
 
+
 @lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.command('reload', 'reload commands')
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -38,18 +40,22 @@ async def reload(ctx: lightbulb.Context):
 
 bot.command(reload)
 
+
 @bot.listen(hikari.StartingEvent)
 async def on_startup(_: hikari.StartingEvent):
     # TODO: sqlite database
     log.info('...STARTING UP...')
 
+
 @bot.listen(hikari.StartedEvent)
 async def on_started(_: hikari.StartedEvent):
     log.info('MARISA IS ALIVE')
 
+
 @bot.listen(lightbulb.LightbulbStartedEvent)
 async def on_lightbulb_started(_: lightbulb.LightbulbStartedEvent):
     log.info("MARISA'S COMMANDS ARE ALIVE")
+
 
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def on_guild_message(event: hikari.GuildMessageCreateEvent):
@@ -72,7 +78,6 @@ async def on_command_use(event: lightbulb.SlashCommandInvocationEvent):
 
 @bot.listen(lightbulb.CommandErrorEvent)
 async def on_error(event: lightbulb.CommandErrorEvent):
-
     exception = event.exception.__cause__ or event.exception
 
     if isinstance(exception, hikari.NotFoundError):
@@ -86,7 +91,9 @@ async def on_error(event: lightbulb.CommandErrorEvent):
 
     raise exception
 
+
 previous_marisa_count = 0
+
 
 @tasks.task(h=1, auto_start=False)
 async def check_marisa():
@@ -106,6 +113,7 @@ if __name__ == '__main__':
     # use uvloop if on Unix machine
     if os.name != 'nt':
         import uvloop
+
         uvloop.install()
 
     bot.run(

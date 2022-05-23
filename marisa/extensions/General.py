@@ -8,7 +8,7 @@ load_dotenv('../')
 plugin = lightbulb.Plugin('General')
 
 
-def generate_response(user: hikari.User) -> str:
+def generate_response(user: hikari.Member) -> str:
     res = f"{user} info:\n"
     res += f"Join date: {user.created_at.strftime('%m/%d/%Y')}\n"
     res += f"id: {user.id}\n"
@@ -35,7 +35,11 @@ async def info(ctx: lightbulb.Context) -> None:
         await ctx.respond("Option must be given using the user's ID (Right click their name then click 'Copy ID' at the bottom of the list) or @user#1234")
         return
 
-    user = await ctx.command.app.rest.fetch_user(given_id[0])
+    user: hikari.Member = await ctx.command.app.rest.fetch_member(
+        guild=ctx.guild_id,
+        user=given_id[0]
+    )
+    print(user.joined_at)
     await ctx.respond(generate_response(user))
 
 
