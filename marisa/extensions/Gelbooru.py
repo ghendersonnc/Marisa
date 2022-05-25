@@ -3,7 +3,6 @@ import lightbulb
 from dotenv import load_dotenv
 import os
 import aiohttp
-import asyncio
 
 load_dotenv('../../.env')
 
@@ -22,7 +21,7 @@ async def random_post(tags: list = None, exclude_tags: list = None):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             result = await response.json()
-            result = result['post'][0] if result else None
+            result = result['post'][0] if 'post' in result else None
     return result
 
 
@@ -33,7 +32,10 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gelbooru(ctx: lightbulb.Context) -> None:
 
-    # TODO: Customize cooldown using sqlite
+    owner_id = await ctx.command.app.fetch_owner_ids()
+
+    if ctx.author.id == owner_id[0]:
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
     if ctx.options.tags:
         if any(tag in ctx.options.tags for tag in ['loli', 'shota']):

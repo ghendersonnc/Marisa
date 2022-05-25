@@ -1,4 +1,3 @@
-import datetime
 import logging
 
 import hikari
@@ -90,10 +89,6 @@ async def on_error(event: lightbulb.CommandErrorEvent):
         return
 
     raise exception
-
-def init_db():
-    # TODO: Create DB schemas if not already in database
-    ...
 
 
 if __name__ == '__main__':
