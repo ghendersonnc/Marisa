@@ -28,7 +28,7 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 
 @plugin.command
 @lightbulb.option(name='tags', description='Tags should be formated as such: tag_one tag_two', required=False)
-@lightbulb.add_cooldown(600.0, 1, lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=600.0, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command(name='gelbooru', description='Random image from gelbooru')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gelbooru(ctx: lightbulb.Context) -> None:

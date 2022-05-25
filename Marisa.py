@@ -26,7 +26,7 @@ bot.load_extensions_from('./marisa/extensions')
 
 
 @lightbulb.add_checks(lightbulb.owner_only)
-@lightbulb.command('reload', 'reload commands')
+@lightbulb.command(name='reload', description='reload commands', hidden=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def reload(ctx: lightbulb.Context):
     bot.reload_extensions(
