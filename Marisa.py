@@ -91,21 +91,9 @@ async def on_error(event: lightbulb.CommandErrorEvent):
 
     raise exception
 
-
-previous_marisa_count = 0
-
-
-@tasks.task(h=1, auto_start=False)
-async def check_marisa():
-    global previous_marisa_count
-    marisa_count = marisa.extensions.Gelbooru.check_for_marisa()
-
-    await bot.rest.create_message(
-        channel=int(os.getenv('MARISA_COUNT_UPDATE_CHANNEL_ID')),
-        content=f"@everyone There has been {marisa_count - previous_marisa_count} Marisa Kirisame artworks uploaded to Gelbooru since last check ({marisa_count} total)",
-        mentions_everyone=True
-    )
-    previous_marisa_count = marisa_count
+def init_db():
+    # TODO: Create DB schemas if not already in database
+    ...
 
 
 if __name__ == '__main__':

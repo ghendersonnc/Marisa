@@ -32,6 +32,9 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 @lightbulb.command(name='gelbooru', description='Random image from gelbooru')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gelbooru(ctx: lightbulb.Context) -> None:
+
+    # TODO: Customize cooldown using sqlite
+
     if ctx.options.tags:
         if any(tag in ctx.options.tags for tag in ['loli', 'shota']):
             await ctx.respond('Nice try.')
