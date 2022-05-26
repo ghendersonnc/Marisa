@@ -69,6 +69,3 @@ def load(bot: lightbulb.BotApp):
 def unload(bot: lightbulb.BotApp):
     bot.remove_plugin(plugin)
 
-
-def check_for_marisa():
-    ...
