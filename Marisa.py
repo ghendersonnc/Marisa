@@ -5,7 +5,9 @@ import lightbulb
 from lightbulb.ext import tasks
 import os
 from dotenv import load_dotenv
-import marisa
+
+import marisa.help
+from marisa import help
 
 load_dotenv()
 
@@ -35,39 +37,19 @@ async def reload(ctx: lightbulb.Context):
     )
 
     await ctx.respond("Extensions reloaded?")
-
-
 bot.command(reload)
 
-
-@bot.listen(hikari.StartingEvent)
-async def on_startup(_: hikari.StartingEvent):
-    # TODO: sqlite database
-    log.info('...STARTING UP...')
-
-
-@bot.listen(hikari.StartedEvent)
-async def on_started(_: hikari.StartedEvent):
-    log.info('MARISA IS ALIVE')
-
-
-@bot.listen(lightbulb.LightbulbStartedEvent)
-async def on_lightbulb_started(_: lightbulb.LightbulbStartedEvent):
-    log.info("MARISA'S COMMANDS ARE ALIVE")
-
-
-@bot.listen(hikari.GuildMessageCreateEvent)
-async def on_guild_message(event: hikari.GuildMessageCreateEvent):
-    if event.author.is_bot:
+@lightbulb.option(name="command", description="Name of command", required=False)
+@lightbulb.command(name="help", description="help")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def help_cmd(ctx: lightbulb.Context):
+    if ctx.options.command:
+        await bot.help_command.send_command_help(ctx, bot.get_slash_command(ctx.options.command))
         return
+    await bot.help_command.send_bot_help(ctx)
 
-
-@bot.listen(hikari.DMMessageCreateEvent)
-async def on_dm_message(event: hikari.DMMessageCreateEvent):
-    if event.author.is_bot:
-        return
-
-    await event.author.send('fbfbfb')
+bot.help_command = marisa.help.CustomHelp(bot)
+bot.command(help_cmd)
 
 
 @bot.listen(lightbulb.SlashCommandInvocationEvent)
