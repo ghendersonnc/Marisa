@@ -14,6 +14,7 @@ class CustomHelp(lightbulb.BaseHelpCommand):
             res += f"{command}\n"
 
         res += f"\nType /help <command> to get usage info for a command"
+        res += f"\nCheck out the source code at https://github.com/ghendersonnc/Marisa"
         res += f"```"
         await ctx.respond(res)
 
@@ -24,8 +25,7 @@ class CustomHelp(lightbulb.BaseHelpCommand):
 
     async def send_command_help(self, ctx, command):
         if not command:
-            await ctx.respond("Command does not exist")
-            await self.send_bot_help(ctx)
+            await ctx.respond("Command does not exist. Type `/help` for a list of usable commands.")
             return
 
         res = f"```ini\n"
@@ -37,6 +37,7 @@ class CustomHelp(lightbulb.BaseHelpCommand):
                 res += f"{option} (Required): {command.options[option].description}\n"
                 continue
             res += f"{option}: {command.options[option].description}\n"
+        res += "\nType /help for a list of usable commands"
         res += "```"
         await ctx.respond(res)
 
