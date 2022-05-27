@@ -1,7 +1,7 @@
+import re
 import hikari
 import lightbulb
 from dotenv import load_dotenv
-import re
 
 load_dotenv('../')
 

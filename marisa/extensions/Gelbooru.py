@@ -1,7 +1,7 @@
+import os
 import hikari
 import lightbulb
 from dotenv import load_dotenv
-import os
 import aiohttp
 
 load_dotenv('../../.env')
@@ -33,7 +33,6 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 @lightbulb.command(name='gelbooru', description='Random image from gelbooru')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def gelbooru(ctx: lightbulb.Context) -> None:
-
     owner_id = await ctx.command.app.fetch_owner_ids()
 
     if ctx.author.id == owner_id[0]:

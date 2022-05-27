@@ -1,5 +1,5 @@
 import os
-import random
+from random import randint, choice
 
 import lightbulb
 from dotenv import load_dotenv
@@ -14,7 +14,7 @@ plugin = lightbulb.Plugin('Random')
 @lightbulb.command(name='randomnumber', description='Random number between 1 and 99999')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def random_number(ctx: lightbulb.Context) -> None:
-    await ctx.respond(f"{random.randint(1, 99999)}")
+    await ctx.respond(f"{randint(1, 99999)}")
 
 
 @plugin.command
@@ -23,7 +23,7 @@ async def random_number(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def random_word(ctx: lightbulb.Context) -> None:
     with open('marisa/assets/words.txt') as f:
-        word = random.choice(f.read().splitlines())
+        word = choice(f.read().splitlines())
 
     await ctx.respond(word)
 
