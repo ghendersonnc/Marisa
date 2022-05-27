@@ -19,6 +19,8 @@ $ pip install -r requirements.txt
 $ python Marisa.py
 ```
 
+Or open in [PyCharm](https://www.jetbrains.com/pycharm/), configure a virtual environment with at least Python 3.8, install requirements.txt and run.
+
 ## Contribute
 
 Not accepting PRs. Clone the repository, create your own on GitHub (Or whatever else you use) and use BSD 3-Clause license.
