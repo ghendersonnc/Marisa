@@ -53,11 +53,6 @@ bot.help_command = marisa.help.CustomHelp(bot)
 bot.command(help_cmd)
 
 
-@bot.listen(hikari.GuildMessageDeleteEvent)
-async def do_something(event: hikari.GuildMessageDeleteEvent):
-    print(f"Message deleted by {event.old_message.author}: {event.old_message.content}")
-
-
 @bot.listen(lightbulb.SlashCommandInvocationEvent)
 async def on_command_use(event: lightbulb.SlashCommandInvocationEvent):
     await bot.rest.trigger_typing(channel=event.context.channel_id)
