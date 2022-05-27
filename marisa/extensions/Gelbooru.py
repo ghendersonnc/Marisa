@@ -16,10 +16,12 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 
     booru_tags.append('sort:random')
     booru_tags = ' '.join(booru_tags)
-    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&limit=1&tags={booru_tags}&api_key={os.getenv('GELBOORU_API_KEY')}&user_id={os.getenv('GELBOORU_USER_ID')}"
+    request_url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&limit=1&tags={booru_tags}&api_key={os.getenv('GELBOORU_API_KEY')}&user_id={os.getenv('GELBOORU_USER_ID')}"
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
+        async with session.get(request_url) as response:
+            if response.status != 200:
+                return None
             result = await response.json()
             result = result['post'][0] if 'post' in result else None
     return result

@@ -33,7 +33,8 @@ async def reload(ctx: lightbulb.Context):
     bot.reload_extensions(
         'marisa.extensions.General',
         'marisa.extensions.Gelbooru',
-        'marisa.extensions.Random'
+        'marisa.extensions.Random',
+        'marisa.extensions.Twitter'
     )
 
     await ctx.respond("Extensions reloaded?")
@@ -52,6 +53,11 @@ bot.help_command = marisa.help.CustomHelp(bot)
 bot.command(help_cmd)
 
 
+@bot.listen(hikari.GuildMessageDeleteEvent)
+async def do_something(event: hikari.GuildMessageDeleteEvent):
+    print(f"Message deleted by {event.old_message.author}: {event.old_message.content}")
+
+
 @bot.listen(lightbulb.SlashCommandInvocationEvent)
 async def on_command_use(event: lightbulb.SlashCommandInvocationEvent):
     await bot.rest.trigger_typing(channel=event.context.channel_id)
@@ -67,7 +73,7 @@ async def on_error(event: lightbulb.CommandErrorEvent):
         return
 
     if isinstance(exception, lightbulb.CommandIsOnCooldown):
-        await event.context.respond(f"You are on cooldown for this command. Please retry in {int(exception.retry_after)} seconds")
+        await event.context.respond(content=f"You are on cooldown for this command. Please retry in {int(exception.retry_after)} seconds", delete_after=10.0)
         return
 
     raise exception
