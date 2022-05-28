@@ -4,9 +4,9 @@
 
 
 Rewriting my old bot from scratch using hikari.  
-This is not the source code for a public bot. If you want to use the bot's source code for your own bot then follow below instructions
+This is a bot I use on my own server.
 
-## Use
+## Develop
 
 ### !! IF ON WINDOWS USE GIT BASH !! 
 ```sh
@@ -21,6 +21,7 @@ $ python Marisa.py
 
 Or open in [PyCharm](https://www.jetbrains.com/pycharm/), configure a virtual environment with at least Python 3.8, install requirements.txt and run.
 
-## Contribute
+## Commands
+Refer to [Command Wiki](https://github.com/ghendersonnc/Marisa/wiki/marisa:commands)
 
-Not accepting PRs. Clone the repository, create your own on GitHub (Or whatever else you use) and use BSD 3-Clause license.
+
