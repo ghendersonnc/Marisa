@@ -27,6 +27,19 @@ async def random_post(tags: list = None, exclude_tags: list = None):
     return result
 
 
+async def respond(ctx: lightbulb.Context, post: dict):
+    gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
+    embed = hikari.Embed(
+        title='Gelbooru Image',
+        url=f"{gb_url}{post['id']}",
+        color=hikari.Color(0x0773FB),
+        description=f"{ctx.options.tags if ctx.options.tags else ''}"
+    )
+    embed.set_footer(f"Plain URL to post: {gb_url}{post['id']}")
+    embed.set_image(post['file_url'])
+    await ctx.respond(embed=embed)
+
+
 @plugin.command
 @lightbulb.option(name='tags', description='Tags should be formated as such: tag_one tag_two', required=False)
 @lightbulb.add_cooldown(length=600.0, uses=1, bucket=lightbulb.UserBucket)
@@ -51,16 +64,22 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
         await ctx.respond('No post :(')
         return
 
-    gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
-    embed = hikari.Embed(
-        title='Gelbooru Image',
-        url=f"{gb_url}{post['id']}",
-        color=hikari.Color(0x0773FB),
-        description=f"{ctx.options.tags if ctx.options.tags else ''}"
-    )
-    embed.set_footer(f"Plain URL to post: {gb_url}{post['id']}")
-    embed.set_image(post['file_url'])
-    await ctx.respond(embed=embed)
+    await respond(ctx, post)
+
+
+@plugin.command
+@lightbulb.add_cooldown(length=600.0, uses=1, bucket=lightbulb.UserBucket)
+@lightbulb.command(name='marisa', description='MARISA GELBOORU')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def marisa(ctx: lightbulb.Context):
+    owner_id = await ctx.command.app.fetch_owner_ids()
+
+    if ctx.author.id == owner_id[0]:
+        await ctx.command.cooldown_manager.reset_cooldown(ctx)
+
+    post = await random_post(tags=['kirisame marisa', 'rating:general', '1girl'], exclude_tags=['loli', 'shota'])
+
+    await respond(ctx, post)
 
 
 def load(bot: lightbulb.BotApp):
