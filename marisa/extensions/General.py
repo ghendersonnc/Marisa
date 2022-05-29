@@ -65,6 +65,10 @@ async def stutter(ctx: lightbulb.Context):
         await ctx.respond(f"Message not found. It MUST exist in this channel, which is <#{ctx.channel_id}>.")
         return
 
+    if not message.content:
+        await ctx.respond("Message has nothing to stutter! It may have been only been an upload")
+        return
+
     for word in message.content.split():
         if not res:
             stutter_section = f"{word[0]}-{word[0]}-"
