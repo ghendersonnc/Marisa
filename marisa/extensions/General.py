@@ -51,7 +51,6 @@ async def info(ctx: lightbulb.Context) -> None:
 @lightbulb.implements(lightbulb.SlashCommand)
 async def stutter(ctx: lightbulb.Context):
     res = []
-    message_id = None
 
     try:
         message_id = int(ctx.options.message_id)
