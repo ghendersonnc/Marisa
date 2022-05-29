@@ -1,4 +1,5 @@
 import re
+from random import randint
 import hikari
 import lightbulb
 from dotenv import load_dotenv
@@ -20,7 +21,7 @@ def generate_response(user: hikari.Member) -> str:
 
 @plugin.command
 @lightbulb.option(name='user', description='User', required=False)
-@lightbulb.add_cooldown(15.0, 1, lightbulb.UserBucket)
+@lightbulb.add_cooldown(length=5.0, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command(name='info', description='Info on provided user. Enter user as @user#1234 OR their ID')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def info(ctx: lightbulb.Context) -> None:
@@ -42,6 +43,44 @@ async def info(ctx: lightbulb.Context) -> None:
     print(user.joined_at)
     await ctx.respond(generate_response(user))
 
+
+@plugin.command
+@lightbulb.option(name="message_id", description="ID for message you want to stutter")
+@lightbulb.add_cooldown(length=120.0, uses=5, bucket=lightbulb.UserBucket)
+@lightbulb.command(name="stutter", description="Stutter a message in the current channel")
+@lightbulb.implements(lightbulb.SlashCommand)
+async def stutter(ctx: lightbulb.Context):
+    res = []
+    message_id = None
+
+    try:
+        message_id = int(ctx.options.message_id)
+    except ValueError:
+        await ctx.respond("Input must be a number")
+        return
+
+    try:
+        message = await ctx.command.app.rest.fetch_message(ctx.channel_id, message_id)
+    except hikari.NotFoundError:
+        await ctx.respond(f"Message not found. It MUST exist in this channel, which is <#{ctx.channel_id}>.")
+        return
+
+    for word in message.content.split():
+        if not res:
+            stutter_section = f"{word[0]}-{word[0]}-"
+            res.append(f"{stutter_section}{word}")
+            continue
+
+        stutter_word = randint(1, 12) % 4 == 0
+
+        if not stutter_word:
+            res.append(word)
+            continue
+
+        stutter_section = f"{word[0]}-{word[0]}-"
+        res.append(f"{stutter_section}{word}")
+    res = ' '.join(res)
+    await ctx.respond(res)
 
 def load(bot: lightbulb.BotApp):
     bot.add_plugin(plugin)
