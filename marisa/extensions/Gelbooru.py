@@ -30,7 +30,7 @@ async def random_post(tags: list = None, exclude_tags: list = None):
 async def respond(ctx: lightbulb.Context, payload: dict, marisa_invoked: bool):
     gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
     embed = hikari.Embed(
-        title='Gelbooru Image',
+        title='Gelbooru Post',
         url=f"{gb_url}{payload['post'][0]['id']}",
         color=hikari.Color(0x0773FB),
         description=f"{ctx.options.tags if ctx.options.tags else ''}"
