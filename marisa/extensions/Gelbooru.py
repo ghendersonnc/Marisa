@@ -23,20 +23,29 @@ async def random_post(tags: list = None, exclude_tags: list = None):
             if response.status != 200:
                 return None
             result = await response.json()
-            result = result['post'][0] if 'post' in result else None
+            result = result if 'post' in result else None
     return result
 
 
-async def respond(ctx: lightbulb.Context, post: dict):
+async def respond(ctx: lightbulb.Context, payload: dict, marisa_invoked: bool):
     gb_url = 'https://gelbooru.com/index.php?page=post&s=view&id='
     embed = hikari.Embed(
         title='Gelbooru Image',
-        url=f"{gb_url}{post['id']}",
+        url=f"{gb_url}{payload['post'][0]['id']}",
         color=hikari.Color(0x0773FB),
         description=f"{ctx.options.tags if ctx.options.tags else ''}"
     )
-    embed.set_footer(f"Plain URL to post: {gb_url}{post['id']}")
-    embed.set_image(post['file_url'])
+
+    if marisa_invoked:
+        footer_content = f"Plain URL to post: {gb_url}{payload['post'][0]['id']}\n\n"
+        footer_content += f"AMOUNT OF SFW MARISAS ON GELBOORU: {payload['@attributes']['count']}"
+        embed.set_footer(footer_content)
+        embed.set_image(payload['post'][0]['file_url'])
+        await ctx.respond(embed=embed)
+        return
+
+    embed.set_footer(f"Plain URL to post: {gb_url}{payload['post'][0]['id']}")
+    embed.set_image(payload['post'][0]['file_url'])
     await ctx.respond(embed=embed)
 
 
@@ -56,15 +65,15 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
             await ctx.respond('Nice try.')
             return
         tags = ctx.options.tags.split(' ')
-        post = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
+        payload = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
     else:
-        post = await random_post(exclude_tags=['loli', 'shota'])
+        payload = await random_post(exclude_tags=['loli', 'shota'])
 
-    if not post:
+    if not payload:
         await ctx.respond('No post :(')
         return
 
-    await respond(ctx, post)
+    await respond(ctx, payload, False)
 
 
 @plugin.command
@@ -77,9 +86,9 @@ async def marisa(ctx: lightbulb.Context):
     if ctx.author.id == owner_id[0]:
         await ctx.command.cooldown_manager.reset_cooldown(ctx)
 
-    post = await random_post(tags=['kirisame marisa', 'rating:general', '1girl'], exclude_tags=['loli', 'shota'])
+    payload = await random_post(tags=['kirisame marisa', 'rating:general', '1girl'], exclude_tags=['loli', 'shota'])
 
-    await respond(ctx, post)
+    await respond(ctx, payload, True)
 
 
 def load(bot: lightbulb.BotApp):
@@ -88,4 +97,3 @@ def load(bot: lightbulb.BotApp):
 
 def unload(bot: lightbulb.BotApp):
     bot.remove_plugin(plugin)
-

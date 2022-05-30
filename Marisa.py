@@ -37,7 +37,7 @@ async def reload(ctx: lightbulb.Context):
         'marisa.extensions.Twitter'
     )
 
-    await ctx.respond("Extensions reloaded?")
+    await ctx.respond("Extensions have maybe been reloaded")
 bot.command(reload)
 
 @lightbulb.option(name="command", description="Name of command", required=False)
