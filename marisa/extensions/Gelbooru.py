@@ -6,13 +6,13 @@ import aiohttp
 
 load_dotenv('../../.env')
 
-
 plugin = lightbulb.Plugin('Gelbooru')
 
 
 async def random_post(tags: list = None, exclude_tags: list = None):
     booru_tags = [tag.strip().lower().replace(' ', '_') for tag in tags] if tags else []
-    booru_tags += ['-' + tag.strip().lstrip('-').lower().replace(' ', '_') for tag in exclude_tags] if exclude_tags else []
+    booru_tags += ['-' + tag.strip().lstrip('-').lower().replace(' ', '_') for tag in
+                   exclude_tags] if exclude_tags else []
 
     booru_tags.append('sort:random')
     booru_tags = ' '.join(booru_tags)
@@ -53,6 +53,11 @@ async def respond(ctx: lightbulb.Context, payload: dict, marisa_invoked: bool):
 
 @plugin.command
 @lightbulb.option(name='tags', description='Tags should be formated as such: tag_one tag_two', required=False)
+@lightbulb.option(name='rating',
+                  description='Rating. Pick between General, Sensitive, Questionable, Explicit',
+                  required=False,
+                  choices=['general', 'sensitive', 'questionable', 'explicit']
+                  )
 @lightbulb.add_cooldown(length=600.0, uses=1, bucket=lightbulb.UserBucket)
 @lightbulb.command(name='gelbooru', description='Random image from gelbooru')
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -67,6 +72,7 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
             await ctx.respond('Nice try.')
             return
         tags = ctx.options.tags.split(' ')
+        tags.append(f"rating:{ctx.options.rating}") if ctx.options.rating else None
         payload = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
     else:
         payload = await random_post(exclude_tags=['loli', 'shota'])

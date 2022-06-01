@@ -10,13 +10,13 @@ plugin = lightbulb.Plugin('General')
 
 
 def generate_response(user: hikari.Member) -> str:
-    res = f"{user} info:\n"
-    res += f"Join date: {user.created_at.strftime('%m/%d/%Y')}\n"
-    res += f"id: {user.id}\n"
-    res += f"Bot Status: {'Is a bot' if user.is_bot else 'Not a bot'}\n"
-    res += f"Avatar URL: {user.avatar_url if user.avatar_url else user.default_avatar_url}\n"
+    response = f"{user} info:\n"
+    response += f"Join date: {user.created_at.strftime('%m/%d/%Y')}\n"
+    response += f"id: {user.id}\n"
+    response += f"Bot Status: {'Is a bot' if user.is_bot else 'Not a bot'}\n"
+    response += f"Avatar URL: {user.avatar_url if user.avatar_url else user.default_avatar_url}\n"
 
-    return res
+    return response
 
 
 @plugin.command
@@ -50,7 +50,7 @@ async def info(ctx: lightbulb.Context) -> None:
 @lightbulb.command(name="stutter", description="Stutter a message in the current channel")
 @lightbulb.implements(lightbulb.SlashCommand)
 async def stutter(ctx: lightbulb.Context):
-    res = []
+    result = []
 
     try:
         message_id = int(ctx.options.message_id)
@@ -69,21 +69,22 @@ async def stutter(ctx: lightbulb.Context):
         return
 
     for word in message.content.split():
-        if not res:
+        if not result:
             stutter_section = f"{word[0]}-{word[0]}-"
-            res.append(f"{stutter_section}{word}")
+            result.append(f"{stutter_section}{word}")
             continue
 
         stutter_word = randint(1, 12) % 4 == 0
 
         if not stutter_word:
-            res.append(word)
+            result.append(word)
             continue
 
         stutter_section = f"{word[0]}-{word[0]}-"
-        res.append(f"{stutter_section}{word}")
-    res = ' '.join(res)
-    await ctx.respond(res)
+        result.append(f"{stutter_section}{word}")
+    result = ' '.join(result)
+    await ctx.respond(result)
+
 
 def load(bot: lightbulb.BotApp):
     bot.add_plugin(plugin)
