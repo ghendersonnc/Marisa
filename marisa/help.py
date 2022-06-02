@@ -28,18 +28,18 @@ class CustomHelp(lightbulb.BaseHelpCommand):
             await ctx.respond("Command does not exist. Type `/help` for a list of usable commands.")
             return
 
-        res = f"```ini\n"
-        res += f"this is the help response for the {command.name} command\n\n"
-        res += f"Description: {command.description}\n\n"
-        res += f"[OPTIONS]\n"
+        response = f"```ini\n"
+        response += f"this is the help response for the {command.name} command\n\n"
+        response += f"Description: {command.description}\n\n"
+        response += f"[OPTIONS]\n"
         for option in command.options:
-            if command.options[option]:
-                res += f"{option} (Required): {command.options[option].description}\n"
+            if command.options[option].required:
+                response += f"{option} (Required): {command.options[option].description}\n"
                 continue
-            res += f"{option}: {command.options[option].description}\n"
-        res += "\nType /help for a list of usable commands"
-        res += "```"
-        await ctx.respond(res)
+            response += f"{option}: {command.options[option].description}\n"
+        response += "\nType /help for a list of usable commands"
+        response += "```"
+        await ctx.respond(response)
 
     async def send_group_help(self, ctx, group):
         # Override this method to change the message sent when the help command
