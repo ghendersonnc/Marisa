@@ -75,7 +75,11 @@ async def gelbooru(ctx: lightbulb.Context) -> None:
         tags.append(f"rating:{ctx.options.rating}") if ctx.options.rating else None
         payload = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
     else:
-        payload = await random_post(exclude_tags=['loli', 'shota'])
+        tags = []
+        if ctx.options.rating:
+            tags = [f"rating:{ctx.options.rating}"]
+
+        payload = await random_post(tags=tags, exclude_tags=['loli', 'shota'])
 
     if not payload:
         await ctx.respond('No post :(')
