@@ -16,6 +16,8 @@ $ cd Marisa
 $ py -3.9 -m venv venv
 $ source ./venv/Scripts/activate
 $ pip install -r requirements.txt
+# edit .env.example to include your own keys/ids
+$ mv .env.example .env
 $ python Marisa.py
 ```
 
